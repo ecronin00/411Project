@@ -1,0 +1,11 @@
+# Submit server .submit file for
+#  Course CMSC411
+#  Project P1: Simulating Pipelined Machine
+
+courseName=CMSC411
+semester=202108
+projectNumber=P1
+courseKey=99d8e813c81422c0
+authentication.type=cas
+baseURL=https://submit.cs.umd.edu:443/fall2021
+submitURL=https://submit.cs.umd.edu:443/fall2021/eclipse/SubmitProjectViaEclipse

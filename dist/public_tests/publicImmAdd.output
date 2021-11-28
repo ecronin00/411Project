@@ -1,0 +1,86 @@
+memory[0]=20420064
+memory[1]=fc000000
+memory[2]=000010e1
+
+state after cycle 0:
+	pc=4
+	memory:
+		mem[0] 0x20420064	(541196388)
+		mem[1] 0xfc000000	(-67108864)
+		mem[2] 0x10e1	(4321)
+	registers:
+		reg[0] 0x0	(0)
+		reg[1] 0x0	(0)
+		reg[2] 0x64	(100)
+		reg[3] 0x0	(0)
+		reg[4] 0x0	(0)
+		reg[5] 0x0	(0)
+		reg[6] 0x0	(0)
+		reg[7] 0x0	(0)
+		reg[8] 0x0	(0)
+		reg[9] 0x0	(0)
+		reg[10] 0x0	(0)
+		reg[11] 0x0	(0)
+		reg[12] 0x0	(0)
+		reg[13] 0x0	(0)
+		reg[14] 0x0	(0)
+		reg[15] 0x0	(0)
+		reg[16] 0x0	(0)
+		reg[17] 0x0	(0)
+		reg[18] 0x0	(0)
+		reg[19] 0x0	(0)
+		reg[20] 0x0	(0)
+		reg[21] 0x0	(0)
+		reg[22] 0x0	(0)
+		reg[23] 0x0	(0)
+		reg[24] 0x0	(0)
+		reg[25] 0x0	(0)
+		reg[26] 0x0	(0)
+		reg[27] 0x0	(0)
+		reg[28] 0x0	(0)
+		reg[29] 0x0	(0)
+		reg[30] 0x0	(0)
+		reg[31] 0x0	(0)
+
+machine halted
+total of 2 instructions executed
+state after cycle 1:
+	pc=8
+	memory:
+		mem[0] 0x20420064	(541196388)
+		mem[1] 0xfc000000	(-67108864)
+		mem[2] 0x10e1	(4321)
+	registers:
+		reg[0] 0x0	(0)
+		reg[1] 0x0	(0)
+		reg[2] 0x64	(100)
+		reg[3] 0x0	(0)
+		reg[4] 0x0	(0)
+		reg[5] 0x0	(0)
+		reg[6] 0x0	(0)
+		reg[7] 0x0	(0)
+		reg[8] 0x0	(0)
+		reg[9] 0x0	(0)
+		reg[10] 0x0	(0)
+		reg[11] 0x0	(0)
+		reg[12] 0x0	(0)
+		reg[13] 0x0	(0)
+		reg[14] 0x0	(0)
+		reg[15] 0x0	(0)
+		reg[16] 0x0	(0)
+		reg[17] 0x0	(0)
+		reg[18] 0x0	(0)
+		reg[19] 0x0	(0)
+		reg[20] 0x0	(0)
+		reg[21] 0x0	(0)
+		reg[22] 0x0	(0)
+		reg[23] 0x0	(0)
+		reg[24] 0x0	(0)
+		reg[25] 0x0	(0)
+		reg[26] 0x0	(0)
+		reg[27] 0x0	(0)
+		reg[28] 0x0	(0)
+		reg[29] 0x0	(0)
+		reg[30] 0x0	(0)
+		reg[31] 0x0	(0)
+
