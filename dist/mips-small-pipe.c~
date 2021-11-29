@@ -58,6 +58,9 @@ int main(int argc, char *argv[]) {
 /************************************************************/
 void run(Pstate state) {
   state_t new;
+
+  int reg1 = 0;
+  int reg2 = 0;
   memset(&new, 0, sizeof(state_t));
 
   /* loop forever until HALT instruction */
@@ -90,8 +93,6 @@ void run(Pstate state) {
 
     new.IFID.pcPlus1 += 4;
     
-    /* i guess that pcPlus1 is to get the next instruction to be fetched? */
-    
     /* --------------------- ID stage --------------------- */
 
     new.IDEX.instr = state -> IFID.instr;
@@ -108,53 +109,105 @@ void run(Pstate state) {
 
     /* --------------------- EX stage --------------------- */
 
+
+    /* there are three places that you can forward from (EXMEM, MEMWB, WBEND)
+       need to check if the instructions you are forwarding from are R type or I type
+       because that changes the fields you need to use */
+    
     new.EXMEM.instr = state -> IDEX.instr;
 
+    reg1 = new.reg[field_r1(new.EXMEM.instr)];
+    reg2 = new.reg[field_r2(new.EXMEM.instr)];
+    
     new.EXMEM.readRegB = 0;
     
-    /* check for all forwarding possibilities */
-
-    if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-
-      /* check for forwarding from MEMWB stage from previous instruction */
-      if (state -> MEMWB.instr != NOPINSTRUCTION) {
-
-
-	printf("INSTRUCTION PREVIOUSLY IN MEM IS NOT NOPINSTRUCTION, CHECKING FOR FORWARDING!\n");
-
-	printf("Instruction writing to: %d\n", field_r2(state->MEMWB.instr));
-	printf("Instruction write data: %d\n", state->MEMWB.writeData);
-	
+    /* check if the instruction we are forwarding from is an I type instruction */  
+    if (state -> MEMWB.instr != NOPINSTRUCTION &&
+      opcode(state -> MEMWB.instr) != REG_REG_OP) {
+      
+      /* printf("Previous instruction in MEMWB is I type and writes to: %d\n", */
+	     field_r2(state->MEMWB.instr));
+      
 	if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
 
-	  printf("FORWARDING TO R1 FROM MEM!\n");
-	  new.reg[field_r1(new.EXMEM.instr)] = state -> MEMWB.writeData;
-	}
-	if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+	  reg1 = state -> MEMWB.writeData;
 	  
-	  printf("FORWARDING TO R2 FROM MEM!\n");
-	  new.reg[field_r2(new.EXMEM.instr)] = state -> MEMWB.writeData;
 	}
+
+	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+		   
+	  if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+
+	    reg2 = state -> MEMWB.writeData;
+	  
+	  }
+	  
+	}
+      
+
+      /* check if the instruction we are forwarding from is an R type instruction */
+    } else if (state -> MEMWB.instr != NOPINSTRUCTION &&
+	       opcode(state -> MEMWB.instr) == REG_REG_OP) {
+
+      if (field_r1(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
+
+	reg1 = state -> MEMWB.writeData;
+
+      }
+
+      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+
+	if (field_r2(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
+
+	  reg2 = state -> MEMWB.writeData;
+
+	}
+
       }
       
-      /* check for forwarding from EXMEM stage from previous instruction */
-      if (state -> EXMEM.instr != NOPINSTRUCTION) {
-	printf("INSTRUCTION PREVIOUSLY IN EX IS NOT NOPINSTRUCTION, CHECKING FOR FORWARDING!\n");
+    }
+  
+    /* check for forwarding from EXMEM stage from previous instruction */
+    if (state -> EXMEM.instr != NOPINSTRUCTION &&
+	opcode(state -> EXMEM.instr) != REG_REG_OP) {
 
-	printf("Instruction writing to: %d\n", field_r2(state->EXMEM.instr));
-	printf("Instruction write data: %d\n", state->EXMEM.aluResult);
+      /* printf("Previous instruction in EXMEM is I type and writes to: %d\n",
+	 field_r2(state->EXMEM.instr)); */
 	
-	if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+      if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
 
-	  printf("FORWARDING TO R1 FROM EX!\n");
-	  new.reg[field_r1(new.EXMEM.instr)] = state -> EXMEM.aluResult;
+	reg1 = state -> EXMEM.aluResult;
+	/* printf("new reg1 value: %d\n", reg1); */
 	  
-	}
+      }
+
+      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+
 	if (field_r2(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
 
-	  printf("FORWARDING TO R2 FROM EX!\n");
-	  new.reg[field_r2(new.EXMEM.instr)] = state -> EXMEM.aluResult;
+	  reg2 = state -> EXMEM.aluResult;
+
 	}
+
+      }
+      
+    } else if (state -> EXMEM.instr != NOPINSTRUCTION &&
+	       opcode(state -> EXMEM.instr) == REG_REG_OP) {
+
+      if (field_r1(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
+
+	reg1 = state -> EXMEM.aluResult;
+
+      }
+
+      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+
+	if (field_r2(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
+
+	  reg2 = state -> EXMEM.aluResult;
+
+	}
+
       }
       
     }
@@ -167,10 +220,9 @@ void run(Pstate state) {
       } else if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 
 	if (func(new.EXMEM.instr) == ADD_FUNC) {
-
-	  printf("%d\n", new.reg[field_r2(new.EXMEM.instr)]);
-	  new.EXMEM.aluResult = new.reg[field_r1(new.EXMEM.instr)] + new.reg[field_r2(new.EXMEM.instr)];
-	  new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+	  
+	  new.EXMEM.aluResult = reg1 + reg2;
+	  new.EXMEM.readRegB = reg2;
 	  
 	}
 
@@ -179,6 +231,8 @@ void run(Pstate state) {
 	new.EXMEM.aluResult = 0;
       
       }
+      reg1 = 0;
+      reg2 = 0;
     }
     
 
