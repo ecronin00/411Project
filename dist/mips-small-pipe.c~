@@ -93,9 +93,6 @@ void run(Pstate state) {
     /* i guess that pcPlus1 is to get the next instruction to be fetched? */
     
     /* --------------------- ID stage --------------------- */
-    /* decode the instruction BEFORE the new instruction
-     by grabbing the instruction from the IFID pipeline
-     (where the instruction previously was) */
 
     new.IDEX.instr = state -> IFID.instr;
 
@@ -112,36 +109,110 @@ void run(Pstate state) {
     /* --------------------- EX stage --------------------- */
 
     new.EXMEM.instr = state -> IDEX.instr;
-    
-    if (new.EXMEM.instr != NOPINSTRUCTION && opcode(new.EXMEM.instr) == ADDI_OP) {
-      
-      new.EXMEM.aluResult = offset(new.EXMEM.instr) + new.reg[field_r1(new.EXMEM.instr)];
-      
-    } else {
 
-      new.EXMEM.aluResult = 0;
+    new.EXMEM.readRegB = 0;
+    
+    /* check for all forwarding possibilities */
+
+    if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+
+      /* check for forwarding from MEMWB stage from previous instruction */
+      if (state -> MEMWB.instr != NOPINSTRUCTION) {
+
+
+	printf("INSTRUCTION PREVIOUSLY IN MEM IS NOT NOPINSTRUCTION, CHECKING FOR FORWARDING!\n");
+
+	printf("Instruction writing to: %d\n", field_r2(state->MEMWB.instr));
+	printf("Instruction write data: %d\n", state->MEMWB.writeData);
+	
+	if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+
+	  printf("FORWARDING TO R1 FROM MEM!\n");
+	  new.reg[field_r1(new.EXMEM.instr)] = state -> MEMWB.writeData;
+	}
+	if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+	  
+	  printf("FORWARDING TO R2 FROM MEM!\n");
+	  new.reg[field_r2(new.EXMEM.instr)] = state -> MEMWB.writeData;
+	}
+      }
       
+      /* check for forwarding from EXMEM stage from previous instruction */
+      if (state -> EXMEM.instr != NOPINSTRUCTION) {
+	printf("INSTRUCTION PREVIOUSLY IN EX IS NOT NOPINSTRUCTION, CHECKING FOR FORWARDING!\n");
+
+	printf("Instruction writing to: %d\n", field_r2(state->EXMEM.instr));
+	printf("Instruction write data: %d\n", state->EXMEM.aluResult);
+	
+	if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+
+	  printf("FORWARDING TO R1 FROM EX!\n");
+	  new.reg[field_r1(new.EXMEM.instr)] = state -> EXMEM.aluResult;
+	  
+	}
+	if (field_r2(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+
+	  printf("FORWARDING TO R2 FROM EX!\n");
+	  new.reg[field_r2(new.EXMEM.instr)] = state -> EXMEM.aluResult;
+	}
+      }
+      
+    }
+
+    if (new.EXMEM.instr != NOPINSTRUCTION) {
+      if (opcode(new.EXMEM.instr) == ADDI_OP) {
+	
+	new.EXMEM.aluResult = offset(new.EXMEM.instr) + new.reg[field_r1(new.EXMEM.instr)];
+      
+      } else if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+
+	if (func(new.EXMEM.instr) == ADD_FUNC) {
+
+	  printf("%d\n", new.reg[field_r2(new.EXMEM.instr)]);
+	  new.EXMEM.aluResult = new.reg[field_r1(new.EXMEM.instr)] + new.reg[field_r2(new.EXMEM.instr)];
+	  new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+	  
+	}
+
+      } else {
+
+	new.EXMEM.aluResult = 0;
+      
+      }
     }
     
 
     /* --------------------- MEM stage --------------------- */
 
     new.MEMWB.instr = state -> EXMEM.instr;
-
+    new.MEMWB.writeData = 0;
     
-    if (opcode(new.MEMWB.instr) != HALT_OP && opcode(new.MEMWB.instr) == ADDI_OP) {
-      new.MEMWB.writeData = state -> EXMEM.aluResult;
-    } else if (opcode(new.MEMWB.instr) == HALT_OP) {
-      new.MEMWB.writeData = 0;
+    if (opcode(new.MEMWB.instr) != HALT_OP) {
+      if (opcode(new.MEMWB.instr) == ADDI_OP ||
+	  opcode(new.MEMWB.instr) == REG_REG_OP) {
+	    
+	new.MEMWB.writeData = state -> EXMEM.aluResult;
+	
+      } else if (opcode(new.MEMWB.instr) == HALT_OP) {
+	new.MEMWB.writeData = 0;
+      }
     }
     
 
     /* --------------------- WB stage --------------------- */
 
     new.WBEND.instr = state -> MEMWB.instr;
-
+    new.WBEND.writeData = 0;
+    
     if (opcode(new.WBEND.instr) == ADDI_OP) {
       new.WBEND.writeData = state -> MEMWB.writeData;
+      new.reg[field_r2(new.WBEND.instr)] = new.WBEND.writeData;
+      
+    } else if (opcode(new.WBEND.instr) == REG_REG_OP) {
+
+      new.WBEND.writeData = state -> MEMWB.writeData;
+      new.reg[field_r3(new.WBEND.instr)] = state -> MEMWB.writeData;
+
     } else if (opcode(new.WBEND.instr) == HALT_OP) {
       printf("machine halted\n");
       printf("total of %d cycles executed\n", state -> cycles);
