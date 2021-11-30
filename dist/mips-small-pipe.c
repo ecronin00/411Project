@@ -87,11 +87,30 @@ void run(Pstate state) {
 
     /* fetch the next instruction */
     new.IFID.instr = new.instrMem[new.pc / 4];
-    
+
     /* gotta add 4 to the program counter */
     new.pc += 4;
+    
+    /* test the offset for branch instructions  */
+    if (opcode(new.IFID.instr) == BEQZ_OP) {
 
-    new.IFID.pcPlus1 += 4;
+      if (offset(new.IFID.instr) > 0) {
+
+	new.IFID.pcPlus1 = new.pc;
+
+      } else {
+
+	new.pc = new.pc + offset(new.IFID.instr);
+	new.IFID.pcPlus1 = new.pc - offset(new.IFID.instr);
+
+      }
+      
+    } else {
+ 
+      new.IFID.pcPlus1 += 4;
+
+    }
+   
     
     /* --------------------- ID stage --------------------- */
 
@@ -101,12 +120,26 @@ void run(Pstate state) {
     new.IDEX.readRegA = new.reg[field_r1(new.IDEX.instr)];
     new.IDEX.readRegB = new.reg[field_r2(new.IDEX.instr)];;
     new.IDEX.offset = offset(new.IDEX.instr);
-    
-    /* check if this instruction is a register-register instruction */
-    if (opcode(new.IDEX.instr) == REG_REG_OP) {
 
+    /* dont forget that if this instruction is R type and previous instruction is LW
+       and there is a dependence then you have to stall one cycle 
+       actually same thing goes for ADDI if theres a dependence  */
+    if ((opcode(new.IDEX.instr) == REG_REG_OP) && (opcode(state -> IDEX.instr) == LW_OP)) { 
+       	if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr) ||
+	    field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr)) {
+
+
+	  new.IDEX.instr = NOPINSTRUCTION;
+	  new.IDEX.pcPlus1 = 0;
+
+
+	  new.IFID.instr = state -> IFID.instr;
+	  new.pc -= 4;
+	  new.IFID.pcPlus1 -= 4;
+
+	}
     }
-
+    
     /* --------------------- EX stage --------------------- */
 
 
@@ -130,9 +163,9 @@ void run(Pstate state) {
       
         if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
 	
-	reg1 = state -> MEMWB.writeData;
+	  reg1 = state -> MEMWB.writeData;
 	
-      }
+	}
       
       if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 	
@@ -184,7 +217,6 @@ void run(Pstate state) {
 	  reg2 = state -> EXMEM.aluResult;
 	  
 	}
-	
       }
 
     /* check if instruction we are forwarding from is R type from EXMEM */
@@ -211,12 +243,9 @@ void run(Pstate state) {
 	  
 	  reg2 = state -> EXMEM.aluResult;
 	  
-	}
-	
-      }
-      
+	}	
+      } 
     }
-  
 
     /* in this part we actually do the execution, no more forwarding after here */
     if (new.EXMEM.instr != NOPINSTRUCTION) {
@@ -246,16 +275,34 @@ void run(Pstate state) {
 	  new.EXMEM.aluResult = reg1 - reg2;
 	  new.EXMEM.readRegB = reg2;
 	  
-	} 
+	} else if (func(new.EXMEM.instr) == AND_FUNC) {
 
-      } else {
+	  new.EXMEM.aluResult = reg1 & reg2;
+	  new.EXMEM.readRegB = reg2;
 
-	new.EXMEM.aluResult = 0;
+	} else if (func(new.EXMEM.instr) == OR_FUNC) {
+
+	  new.EXMEM.aluResult = reg1 | reg2;
+	  new.EXMEM.readRegB = reg2;
+
+	} else if (func(new.EXMEM.instr) == SLL_FUNC) {
+
+	  new.EXMEM.aluResult = reg1 << reg2;
+	  new.EXMEM.readRegB = reg2;
+
+	} else if (func(new.EXMEM.instr) == SRL_FUNC) {
+
+	  new.EXMEM.aluResult = reg1 >> reg2;
+	  new.EXMEM.readRegB = reg2;
+	
+	} else {
+
+	  new.EXMEM.aluResult = 0;
       
+	}
+	reg1 = 0;
+	reg2 = 0;
       }
-      reg1 = 0;
-      reg2 = 0;
-    }
     
 
     /* --------------------- MEM stage --------------------- */
@@ -320,6 +367,8 @@ void run(Pstate state) {
     /* transfer new state into current state */
     memcpy(state, &new, sizeof(state_t));
   }
+}
+
 }
 /************************************************************/
 
