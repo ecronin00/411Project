@@ -128,10 +128,9 @@ void run(Pstate state) {
       if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr) ||
 	  field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr)) {
 	
-	
 	new.IDEX.instr = NOPINSTRUCTION;
 	new.IDEX.pcPlus1 = 0;
-	
+	new.IDEX.offset = offset(NOPINSTRUCTION);
 	
 	new.IFID.instr = state -> IFID.instr;
 	new.pc -= 4;
@@ -154,97 +153,100 @@ void run(Pstate state) {
     reg2 = new.reg[field_r2(new.EXMEM.instr)];
     
     new.EXMEM.readRegB = 0;
+    new.EXMEM.aluResult = 0;
     
     /* check if the instruction we are forwarding from is an I type instruction
-       from MEMWB */  
-    if (state -> MEMWB.instr != NOPINSTRUCTION &&
-	opcode(state -> MEMWB.instr) != REG_REG_OP &&
-	opcode(state -> MEMWB.instr) != SW_OP) {
-      
-      if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+       from MEMWB */
+    if (opcode(new.EXMEM.instr) != HALT_OP) {
+      if (state -> MEMWB.instr != NOPINSTRUCTION &&
+	  opcode(state -> MEMWB.instr) != REG_REG_OP &&
+	  opcode(state -> MEMWB.instr) != SW_OP) {
 	
-	reg1 = state -> MEMWB.writeData;
-	
-      }
-      
-      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-	
-	if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+	if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
 	  
-	  reg2 = state -> MEMWB.writeData;
+	  reg1 = state -> MEMWB.writeData;
 	  
 	}
 	
-      }  
-      
-      /* check if the instruction we are forwarding from is an R type instruction
-	 from MEMWB */
-    } else if (state -> MEMWB.instr != NOPINSTRUCTION &&
-	       opcode(state -> MEMWB.instr) == REG_REG_OP &&
-	       opcode(state -> MEMWB.instr) != SW_OP) {
-      
-      if (field_r1(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
-	
-	reg1 = state -> MEMWB.writeData;
-	
-      }
-      
-      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-	
-	if (field_r2(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
+	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 	  
-	  reg2 = state -> MEMWB.writeData;
+	  if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+	    
+	    reg2 = state -> MEMWB.writeData;
+	    
+	  }
+	  
+	}  
+	
+	/* check if the instruction we are forwarding from is an R type instruction
+	   from MEMWB */
+      } else if (state -> MEMWB.instr != NOPINSTRUCTION &&
+		 opcode(state -> MEMWB.instr) == REG_REG_OP &&
+		 opcode(state -> MEMWB.instr) != SW_OP) {
+	
+	if (field_r1(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
+	  
+	  reg1 = state -> MEMWB.writeData;
 	  
 	}
-      }
-    }
-    
-    /* check if instruction we are forwarding from is I type from EXMEM */
-    if (state -> EXMEM.instr != NOPINSTRUCTION &&
-	opcode(state -> EXMEM.instr) != REG_REG_OP &&
-	opcode(state -> EXMEM.instr) != SW_OP) {
-      
-      if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
 	
-	reg1 = state -> EXMEM.aluResult;
-	
+	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+	  
+	  if (field_r2(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
+	    
+	    reg2 = state -> MEMWB.writeData;
+	    
+	  }
+	}
       }
       
-      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+      /* check if instruction we are forwarding from is I type from EXMEM */
+      if (state -> EXMEM.instr != NOPINSTRUCTION &&
+	  opcode(state -> EXMEM.instr) != REG_REG_OP &&
+	  opcode(state -> EXMEM.instr) != SW_OP) {
 	
-	if (field_r2(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+	if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+	  
+	  reg1 = state -> EXMEM.aluResult;
+	  
+	}
+	
+	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+	  
+	  if (field_r2(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+	    
+	    reg2 = state -> EXMEM.aluResult;
+	    
+	  }
+	}
+	
+	/* check if instruction we are forwarding from is R type from EXMEM */
+      } else if (state -> EXMEM.instr != NOPINSTRUCTION &&
+		 opcode(state -> EXMEM.instr) == REG_REG_OP &&
+		 opcode(state -> EXMEM.instr) != SW_OP) {
+	
+	/* if this instruction is SW, just take the previous aluresult into reg2 */
+	if (opcode(new.EXMEM.instr) == SW_OP) {
 	  
 	  reg2 = state -> EXMEM.aluResult;
 	  
 	}
-      }
-      
-      /* check if instruction we are forwarding from is R type from EXMEM */
-    } else if (state -> EXMEM.instr != NOPINSTRUCTION &&
-	       opcode(state -> EXMEM.instr) == REG_REG_OP &&
-	       opcode(state -> EXMEM.instr) != SW_OP) {
-      
-      /* if this instruction is SW, just take the previous aluresult into reg2 */
-      if (opcode(new.EXMEM.instr) == SW_OP) {
 	
-	reg2 = state -> EXMEM.aluResult;
-	
-      }
-      
-      if (field_r1(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
-	
-	reg1 = state -> EXMEM.aluResult;
-	
-      }
-      
-      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-	
-	if (field_r2(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
+	if (field_r1(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
 	  
-	  reg2 = state -> EXMEM.aluResult;
+	  reg1 = state -> EXMEM.aluResult;
 	  
-	}	
-      } 
+	}
+	
+	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+	  
+	  if (field_r2(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
+	    
+	    reg2 = state -> EXMEM.aluResult;
+	    
+	  }	
+	} 
+      }
     }
     
     /* in this part we actually do the execution, no more forwarding after here */
@@ -263,6 +265,34 @@ void run(Pstate state) {
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
 	new.EXMEM.readRegB = reg2;
 	
+      } else if (opcode(new.EXMEM.instr) == BEQZ_OP) {
+
+	/* if offset > 0 and reg1 == 0 then we predicted wrong 
+	   if offset < 0 and reg1 != 0 then we predicted wrong */
+	if ((state->IDEX.offset > 0 && reg1 == 0) ||
+	    (state->IDEX.offset < 0 && reg1 != 0)) {
+
+	  /* now that we know we predicted wrong, replace last 2 instructions with
+             NOPINSTRUCTION and adjust to fetch the proper instruction next */
+	  new.IFID.instr = NOPINSTRUCTION;
+	  new.IDEX.instr = NOPINSTRUCTION;
+	  new.pc = state -> IDEX.offset + state -> IDEX.pcPlus1;
+	  new.IFID.pcPlus1 = 0;
+	  new.IDEX.pcPlus1 = 0;
+	  reg1 = 0;
+	  reg2 = 0;
+
+	  new.EXMEM.aluResult = state->IDEX.pcPlus1 + offset(new.EXMEM.instr);
+	  new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+
+	  /* this is for when we get it right, man this part is so much nicer than the last */
+	} else {
+
+	  new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+	  new.EXMEM.aluResult = state -> IDEX.pcPlus1 + offset(new.EXMEM.instr);
+	  
+	}
+
       } else if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 	
 	if (func(new.EXMEM.instr) == ADD_FUNC) {
@@ -296,7 +326,7 @@ void run(Pstate state) {
 	  new.EXMEM.readRegB = reg2;
 	  
 	} else {
-	  
+
 	  new.EXMEM.aluResult = 0;
 	  
 	}
@@ -312,7 +342,8 @@ void run(Pstate state) {
     
     if (opcode(new.MEMWB.instr) != HALT_OP) {
       if (opcode(new.MEMWB.instr) == ADDI_OP ||
-	  opcode(new.MEMWB.instr) == REG_REG_OP) {
+	  opcode(new.MEMWB.instr) == REG_REG_OP ||
+	  opcode(new.MEMWB.instr) == BEQZ_OP) {
 	
 	new.MEMWB.writeData = state -> EXMEM.aluResult;
 	
@@ -346,7 +377,8 @@ void run(Pstate state) {
       new.WBEND.writeData = state -> MEMWB.writeData;
       new.reg[field_r3(new.WBEND.instr)] = state -> MEMWB.writeData;
       
-    } else if (opcode(new.WBEND.instr) == LW_OP) {
+    } else if (opcode(new.WBEND.instr) == LW_OP ||
+	       opcode(new.WBEND.instr) == BEQZ_OP) {
       
       new.WBEND.writeData = state -> MEMWB.writeData;
       
