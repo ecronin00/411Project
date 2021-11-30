@@ -117,106 +117,128 @@ void run(Pstate state) {
     new.EXMEM.instr = state -> IDEX.instr;
 
     reg1 = new.reg[field_r1(new.EXMEM.instr)];
+    
     reg2 = new.reg[field_r2(new.EXMEM.instr)];
     
     new.EXMEM.readRegB = 0;
+
+
+    if (state -> EXMEM.instr != NOPINSTRUCTION &&
+	     opcode(state -> EXMEM.instr) == REG_REG_OP &&
+	     opcode(state -> EXMEM.instr) != SW_OP) {
+
+    }
     
     /* check if the instruction we are forwarding from is an I type instruction */  
     if (state -> MEMWB.instr != NOPINSTRUCTION &&
-      opcode(state -> MEMWB.instr) != REG_REG_OP) {
+	opcode(state -> MEMWB.instr) != REG_REG_OP &&
+	opcode(state -> MEMWB.instr) != SW_OP) {
       
-      /* printf("Previous instruction in MEMWB is I type and writes to: %d\n", */
-	     field_r2(state->MEMWB.instr));
+      /* printf("Previous instruction in MEMWB is I type and writes to: %d\n", 
+	 field_r2(state->MEMWB.instr)); */
       
-	if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
-
-	  reg1 = state -> MEMWB.writeData;
+      if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+	
+	reg1 = state -> MEMWB.writeData;
+	
+      }
+      
+      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+	
+	if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+	  
+	  reg2 = state -> MEMWB.writeData;
 	  
 	}
-
-	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-		   
-	  if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
-
-	    reg2 = state -> MEMWB.writeData;
-	  
-	  }
-	  
-	}
+	
+      }  
       
-
       /* check if the instruction we are forwarding from is an R type instruction */
     } else if (state -> MEMWB.instr != NOPINSTRUCTION &&
-	       opcode(state -> MEMWB.instr) == REG_REG_OP) {
+	       opcode(state -> MEMWB.instr) == REG_REG_OP &&
+	       opcode(state -> MEMWB.instr) != SW_OP) {
 
       if (field_r1(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
-
+	
 	reg1 = state -> MEMWB.writeData;
-
+	
       }
-
+      
       if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-
+	
 	if (field_r2(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
-
+	  
 	  reg2 = state -> MEMWB.writeData;
-
+	
 	}
+      }
+    }
+       
+    /* check for forwarding from EXMEM stage from previous instruction */
+    if (state -> EXMEM.instr != NOPINSTRUCTION &&
+	opcode(state -> EXMEM.instr) != REG_REG_OP &&
+	opcode(state -> EXMEM.instr) != SW_OP) {
+      
+      if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+	
+	reg1 = state -> EXMEM.aluResult;
+	
+      }
+      
+      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+	
+	if (field_r2(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
+	  
+	  reg2 = state -> EXMEM.aluResult;
+	  
+	}
+	
+      }
+      
+    } else if (state -> EXMEM.instr != NOPINSTRUCTION &&
+	       opcode(state -> EXMEM.instr) == REG_REG_OP &&
+	       opcode(state -> EXMEM.instr) != SW_OP) {
 
+      if (opcode(new.EXMEM.instr) == SW_OP) {
+
+	reg2 = state -> EXMEM.aluResult;
+	
+      }
+      
+      if (field_r1(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
+	
+	reg1 = state -> EXMEM.aluResult;
+	
+      }
+      
+      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
+	
+	if (field_r2(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
+	  
+	  reg2 = state -> EXMEM.aluResult;
+	  
+	}
+	
       }
       
     }
   
-    /* check for forwarding from EXMEM stage from previous instruction */
-    if (state -> EXMEM.instr != NOPINSTRUCTION &&
-	opcode(state -> EXMEM.instr) != REG_REG_OP) {
-
-      /* printf("Previous instruction in EXMEM is I type and writes to: %d\n",
-	 field_r2(state->EXMEM.instr)); */
-	
-      if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
-
-	reg1 = state -> EXMEM.aluResult;
-	/* printf("new reg1 value: %d\n", reg1); */
-	  
-      }
-
-      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-
-	if (field_r2(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
-
-	  reg2 = state -> EXMEM.aluResult;
-
-	}
-
-      }
-      
-    } else if (state -> EXMEM.instr != NOPINSTRUCTION &&
-	       opcode(state -> EXMEM.instr) == REG_REG_OP) {
-
-      if (field_r1(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
-
-	reg1 = state -> EXMEM.aluResult;
-
-      }
-
-      if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-
-	if (field_r2(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
-
-	  reg2 = state -> EXMEM.aluResult;
-
-	}
-
-      }
-      
-    }
 
     if (new.EXMEM.instr != NOPINSTRUCTION) {
       if (opcode(new.EXMEM.instr) == ADDI_OP) {
 	
 	new.EXMEM.aluResult = offset(new.EXMEM.instr) + new.reg[field_r1(new.EXMEM.instr)];
       
+      } else if (opcode(new.EXMEM.instr) == LW_OP) {
+
+	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
+	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+
+      } else if (opcode(new.EXMEM.instr) == SW_OP) {
+
+	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
+	new.EXMEM.readRegB = reg2;
+	
       } else if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 
 	if (func(new.EXMEM.instr) == ADD_FUNC) {
@@ -224,7 +246,12 @@ void run(Pstate state) {
 	  new.EXMEM.aluResult = reg1 + reg2;
 	  new.EXMEM.readRegB = reg2;
 	  
-	}
+	} else if (func(new.EXMEM.instr) == SUB_FUNC) {
+
+	  new.EXMEM.aluResult = reg1 - reg2;
+	  new.EXMEM.readRegB = reg2;
+	  
+	} 
 
       } else {
 
@@ -247,6 +274,16 @@ void run(Pstate state) {
 	    
 	new.MEMWB.writeData = state -> EXMEM.aluResult;
 	
+      } else if (opcode(new.MEMWB.instr) == LW_OP) {
+
+	new.MEMWB.writeData = state -> dataMem[state -> EXMEM.aluResult / 4];
+	
+      } else if (opcode(new.MEMWB.instr) == SW_OP) {
+
+	new.MEMWB.writeData = state->EXMEM.readRegB;
+	new.dataMem[(new.reg[field_r1(new.MEMWB.instr)] +
+		     field_imm(new.MEMWB.instr))/4] = new.MEMWB.writeData;
+
       } else if (opcode(new.MEMWB.instr) == HALT_OP) {
 	new.MEMWB.writeData = 0;
       }
@@ -266,6 +303,16 @@ void run(Pstate state) {
 
       new.WBEND.writeData = state -> MEMWB.writeData;
       new.reg[field_r3(new.WBEND.instr)] = state -> MEMWB.writeData;
+
+    } else if (opcode(new.WBEND.instr) == LW_OP) {
+
+      new.WBEND.writeData = state -> MEMWB.writeData;
+
+      new.reg[field_r2(new.WBEND.instr)] = new.WBEND.writeData;
+
+    } else if (opcode(new.WBEND.instr) == SW_OP) {
+
+      new.WBEND.writeData = state -> MEMWB.writeData;
 
     } else if (opcode(new.WBEND.instr) == HALT_OP) {
       printf("machine halted\n");
