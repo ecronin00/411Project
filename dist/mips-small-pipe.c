@@ -9,28 +9,28 @@ int main(int argc, char *argv[]) {
   char line[MAXLINELENGTH];
   state_t state;
   FILE *filePtr;
-
+  
   if (argc != 2) {
     printf("error: usage: %s <machine-code file>\n", argv[0]);
     return 1;
   }
-
+  
   memset(&state, 0, sizeof(state_t));
-
+  
   state.pc = state.cycles = 0;
   state.IFID.instr = state.IDEX.instr = state.EXMEM.instr = state.MEMWB.instr =
-      state.WBEND.instr = NOPINSTRUCTION; /* nop */
-
+    state.WBEND.instr = NOPINSTRUCTION; /* nop */
+  
   /* read machine-code file into instruction/data memory (starting at address 0)
    */
-
+  
   filePtr = fopen(argv[1], "r");
   if (filePtr == NULL) {
     printf("error: can't open file %s\n", argv[1]);
     perror("fopen");
     exit(1);
   }
-
+  
   for (state.numMemory = 0; fgets(line, MAXLINELENGTH, filePtr) != NULL;
        state.numMemory++) {
     if (sscanf(line, "%x", &state.dataMem[state.numMemory]) != 1) {
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     state.instrMem[state.numMemory] = state.dataMem[state.numMemory];
     printf("memory[%d]=%x\n", state.numMemory, state.dataMem[state.numMemory]);
   }
-
+  
   printf("%d memory words\n", state.numMemory);
 
   printf("\tinstruction memory:\n");
@@ -58,114 +58,114 @@ int main(int argc, char *argv[]) {
 /************************************************************/
 void run(Pstate state) {
   state_t new;
-
+  
   int reg1 = 0;
   int reg2 = 0;
   memset(&new, 0, sizeof(state_t));
-
+  
   /* loop forever until HALT instruction */
   while (1) {
-
+    
     printState(state);
-
+    
     /* copy everything so all we have to do is make changes.
        (this is primarily for the memory and reg arrays) */
     memcpy(&new, state, sizeof(state_t));
-
+    
     /* state is copied into variable "new"
        increment the cycle count by 1 for the new state */
     new.cycles++;
-
-
+    
+    
     /* IF is for most recent instruction, other stages are for previous
        instructions */
-
+    
     /* when we go through the first iteration, all cycles except IF
        should do nothing (NOPINSTRUCTION) */ 
     
     /* --------------------- IF stage --------------------- */
-
+    
     /* fetch the next instruction */
     new.IFID.instr = new.instrMem[new.pc / 4];
-
+    
     /* gotta add 4 to the program counter */
     new.pc += 4;
     
     /* test the offset for branch instructions  */
     if (opcode(new.IFID.instr) == BEQZ_OP) {
-
+      
       if (offset(new.IFID.instr) > 0) {
-
+	
 	new.IFID.pcPlus1 = new.pc;
-
+	
       } else {
-
+	
 	new.pc = new.pc + offset(new.IFID.instr);
 	new.IFID.pcPlus1 = new.pc - offset(new.IFID.instr);
-
+	
       }
       
     } else {
- 
+      
       new.IFID.pcPlus1 += 4;
-
+      
     }
-   
+    
     
     /* --------------------- ID stage --------------------- */
-
+    
     new.IDEX.instr = state -> IFID.instr;
-
+    
     new.IDEX.pcPlus1 = state->IFID.pcPlus1;
     new.IDEX.readRegA = new.reg[field_r1(new.IDEX.instr)];
     new.IDEX.readRegB = new.reg[field_r2(new.IDEX.instr)];;
     new.IDEX.offset = offset(new.IDEX.instr);
-
+    
     /* dont forget that if this instruction is R type and previous instruction is LW
        and there is a dependence then you have to stall one cycle 
        actually same thing goes for ADDI if theres a dependence  */
     if ((opcode(new.IDEX.instr) == REG_REG_OP) && (opcode(state -> IDEX.instr) == LW_OP)) { 
-       	if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr) ||
-	    field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr)) {
-
-
-	  new.IDEX.instr = NOPINSTRUCTION;
-	  new.IDEX.pcPlus1 = 0;
-
-
-	  new.IFID.instr = state -> IFID.instr;
-	  new.pc -= 4;
-	  new.IFID.pcPlus1 -= 4;
-
-	}
+      if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr) ||
+	  field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr)) {
+	
+	
+	new.IDEX.instr = NOPINSTRUCTION;
+	new.IDEX.pcPlus1 = 0;
+	
+	
+	new.IFID.instr = state -> IFID.instr;
+	new.pc -= 4;
+	new.IFID.pcPlus1 -= 4;
+	
+      }
     }
     
     /* --------------------- EX stage --------------------- */
-
-
+    
+    
     /* there are three places that you can forward from (EXMEM, MEMWB, WBEND)
        need to check if the instructions you are forwarding from are R type or I type
        because that changes the fields you need to use */
     
     new.EXMEM.instr = state -> IDEX.instr;
-
+    
     reg1 = new.reg[field_r1(new.EXMEM.instr)];
     
     reg2 = new.reg[field_r2(new.EXMEM.instr)];
     
     new.EXMEM.readRegB = 0;
-
+    
     /* check if the instruction we are forwarding from is an I type instruction
        from MEMWB */  
     if (state -> MEMWB.instr != NOPINSTRUCTION &&
 	opcode(state -> MEMWB.instr) != REG_REG_OP &&
 	opcode(state -> MEMWB.instr) != SW_OP) {
       
-        if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
+      if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
 	
-	  reg1 = state -> MEMWB.writeData;
+	reg1 = state -> MEMWB.writeData;
 	
-	}
+      }
       
       if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 	
@@ -177,12 +177,12 @@ void run(Pstate state) {
 	
       }  
       
-    /* check if the instruction we are forwarding from is an R type instruction
-       from MEMWB */
+      /* check if the instruction we are forwarding from is an R type instruction
+	 from MEMWB */
     } else if (state -> MEMWB.instr != NOPINSTRUCTION &&
 	       opcode(state -> MEMWB.instr) == REG_REG_OP &&
 	       opcode(state -> MEMWB.instr) != SW_OP) {
-
+      
       if (field_r1(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
 	
 	reg1 = state -> MEMWB.writeData;
@@ -194,11 +194,11 @@ void run(Pstate state) {
 	if (field_r2(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
 	  
 	  reg2 = state -> MEMWB.writeData;
-	
+	  
 	}
       }
     }
-       
+    
     /* check if instruction we are forwarding from is I type from EXMEM */
     if (state -> EXMEM.instr != NOPINSTRUCTION &&
 	opcode(state -> EXMEM.instr) != REG_REG_OP &&
@@ -218,15 +218,15 @@ void run(Pstate state) {
 	  
 	}
       }
-
-    /* check if instruction we are forwarding from is R type from EXMEM */
+      
+      /* check if instruction we are forwarding from is R type from EXMEM */
     } else if (state -> EXMEM.instr != NOPINSTRUCTION &&
 	       opcode(state -> EXMEM.instr) == REG_REG_OP &&
 	       opcode(state -> EXMEM.instr) != SW_OP) {
-
+      
       /* if this instruction is SW, just take the previous aluresult into reg2 */
       if (opcode(new.EXMEM.instr) == SW_OP) {
-
+	
 	reg2 = state -> EXMEM.aluResult;
 	
       }
@@ -246,94 +246,94 @@ void run(Pstate state) {
 	}	
       } 
     }
-
+    
     /* in this part we actually do the execution, no more forwarding after here */
     if (new.EXMEM.instr != NOPINSTRUCTION) {
       if (opcode(new.EXMEM.instr) == ADDI_OP) {
 	
 	new.EXMEM.aluResult = offset(new.EXMEM.instr) + new.reg[field_r1(new.EXMEM.instr)];
-      
+	
       } else if (opcode(new.EXMEM.instr) == LW_OP) {
-
+	
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
 	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
-
+	
       } else if (opcode(new.EXMEM.instr) == SW_OP) {
-
+	
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
 	new.EXMEM.readRegB = reg2;
 	
       } else if (opcode(new.EXMEM.instr) == REG_REG_OP) {
-
+	
 	if (func(new.EXMEM.instr) == ADD_FUNC) {
 	  
 	  new.EXMEM.aluResult = reg1 + reg2;
 	  new.EXMEM.readRegB = reg2;
 	  
 	} else if (func(new.EXMEM.instr) == SUB_FUNC) {
-
+	  
 	  new.EXMEM.aluResult = reg1 - reg2;
 	  new.EXMEM.readRegB = reg2;
 	  
 	} else if (func(new.EXMEM.instr) == AND_FUNC) {
-
+	  
 	  new.EXMEM.aluResult = reg1 & reg2;
 	  new.EXMEM.readRegB = reg2;
-
+	  
 	} else if (func(new.EXMEM.instr) == OR_FUNC) {
-
+	  
 	  new.EXMEM.aluResult = reg1 | reg2;
 	  new.EXMEM.readRegB = reg2;
-
+	  
 	} else if (func(new.EXMEM.instr) == SLL_FUNC) {
-
+	  
 	  new.EXMEM.aluResult = reg1 << reg2;
 	  new.EXMEM.readRegB = reg2;
-
+	  
 	} else if (func(new.EXMEM.instr) == SRL_FUNC) {
-
+	  
 	  new.EXMEM.aluResult = reg1 >> reg2;
 	  new.EXMEM.readRegB = reg2;
-	
+	  
 	} else {
-
+	  
 	  new.EXMEM.aluResult = 0;
-      
+	  
 	}
 	reg1 = 0;
 	reg2 = 0;
       }
-    
-
+    }
+      
     /* --------------------- MEM stage --------------------- */
-
+    
     new.MEMWB.instr = state -> EXMEM.instr;
     new.MEMWB.writeData = 0;
     
     if (opcode(new.MEMWB.instr) != HALT_OP) {
       if (opcode(new.MEMWB.instr) == ADDI_OP ||
 	  opcode(new.MEMWB.instr) == REG_REG_OP) {
-	    
+	
 	new.MEMWB.writeData = state -> EXMEM.aluResult;
 	
       } else if (opcode(new.MEMWB.instr) == LW_OP) {
-
+	
 	new.MEMWB.writeData = state -> dataMem[state -> EXMEM.aluResult / 4];
 	
       } else if (opcode(new.MEMWB.instr) == SW_OP) {
-
+	
 	new.MEMWB.writeData = state->EXMEM.readRegB;
 	new.dataMem[(new.reg[field_r1(new.MEMWB.instr)] +
 		     field_imm(new.MEMWB.instr))/4] = new.MEMWB.writeData;
-
+	
       } else if (opcode(new.MEMWB.instr) == HALT_OP) {
 	new.MEMWB.writeData = 0;
       }
     }
     
-
+    
     /* --------------------- WB stage --------------------- */
-
+    
     new.WBEND.instr = state -> MEMWB.instr;
     new.WBEND.writeData = 0;
     
@@ -342,34 +342,33 @@ void run(Pstate state) {
       new.reg[field_r2(new.WBEND.instr)] = new.WBEND.writeData;
       
     } else if (opcode(new.WBEND.instr) == REG_REG_OP) {
-
+      
       new.WBEND.writeData = state -> MEMWB.writeData;
       new.reg[field_r3(new.WBEND.instr)] = state -> MEMWB.writeData;
-
+      
     } else if (opcode(new.WBEND.instr) == LW_OP) {
-
+      
       new.WBEND.writeData = state -> MEMWB.writeData;
-
+      
       new.reg[field_r2(new.WBEND.instr)] = new.WBEND.writeData;
-
+      
     } else if (opcode(new.WBEND.instr) == SW_OP) {
-
+      
       new.WBEND.writeData = state -> MEMWB.writeData;
-
+      
     } else if (opcode(new.WBEND.instr) == HALT_OP) {
       printf("machine halted\n");
       printf("total of %d cycles executed\n", state -> cycles);
       exit(0);
     }
-
+    
     /* --------------------- end stage --------------------- */
-
+    
     /* transfer new state into current state */
     memcpy(state, &new, sizeof(state_t));
   }
 }
 
-}
 /************************************************************/
 
 /************************************************************/
