@@ -107,7 +107,7 @@ void run(Pstate state) {
       
     } else {
       
-      new.IFID.pcPlus1 += 4;
+      new.IFID.pcPlus1 = new.pc;
       
     }
     
@@ -134,7 +134,7 @@ void run(Pstate state) {
 	
 	new.IFID.instr = state -> IFID.instr;
 	new.pc -= 4;
-	new.IFID.pcPlus1 -= 4;
+	new.IFID.pcPlus1 = new.pc;
 	
       }
     }
@@ -277,11 +277,14 @@ void run(Pstate state) {
              NOPINSTRUCTION and adjust to fetch the proper instruction next */
 	  new.IFID.instr = NOPINSTRUCTION;
 	  new.IDEX.instr = NOPINSTRUCTION;
+	  new.IDEX.readRegA = 0;
+	  new.IDEX.readRegB = 0;
 	  new.pc = state -> IDEX.offset + state -> IDEX.pcPlus1;
 	  new.IFID.pcPlus1 = 0;
 	  new.IDEX.pcPlus1 = 0;
 	  reg1 = 0;
 	  reg2 = 0;
+	  new.IDEX.offset = 32;
 
 	  new.EXMEM.aluResult = state->IDEX.pcPlus1 + offset(new.EXMEM.instr);
 	  new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
@@ -291,7 +294,7 @@ void run(Pstate state) {
 
 	  new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
 	  new.EXMEM.aluResult = state -> IDEX.pcPlus1 + offset(new.EXMEM.instr);
-	  
+	
 	}
 
       } else if (opcode(new.EXMEM.instr) == REG_REG_OP) {
