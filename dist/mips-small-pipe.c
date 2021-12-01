@@ -284,7 +284,7 @@ void run(Pstate state) {
       } else if (opcode(new.EXMEM.instr) == LW_OP) {
 
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
-	new.EXMEM.readRegB = new.reg[field_r1(new.EXMEM.instr)];
+	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
 	
       } else if (opcode(new.EXMEM.instr) == SW_OP) {
 
