@@ -252,8 +252,9 @@ void run(Pstate state) {
     /* in this part we actually do the execution, no more forwarding after here */
     if (new.EXMEM.instr != NOPINSTRUCTION) {
       if (opcode(new.EXMEM.instr) == ADDI_OP) {
-	
+
 	new.EXMEM.aluResult = offset(new.EXMEM.instr) + new.reg[field_r1(new.EXMEM.instr)];
+	new.EXMEM.readRegB = state -> IDEX.readRegB;
 	
       } else if (opcode(new.EXMEM.instr) == LW_OP) {
 	
@@ -377,8 +378,7 @@ void run(Pstate state) {
       new.WBEND.writeData = state -> MEMWB.writeData;
       new.reg[field_r3(new.WBEND.instr)] = state -> MEMWB.writeData;
       
-    } else if (opcode(new.WBEND.instr) == LW_OP ||
-	       opcode(new.WBEND.instr) == BEQZ_OP) {
+    } else if (opcode(new.WBEND.instr) == LW_OP) {
       
       new.WBEND.writeData = state -> MEMWB.writeData;
       
@@ -388,6 +388,10 @@ void run(Pstate state) {
       
       new.WBEND.writeData = state -> MEMWB.writeData;
       
+    } else if (opcode(new.WBEND.instr) == BEQZ_OP) {
+
+      new.WBEND.writeData = state -> MEMWB.writeData;
+
     } else if (opcode(new.WBEND.instr) == HALT_OP) {
       printf("machine halted\n");
       printf("total of %d cycles executed\n", state -> cycles);

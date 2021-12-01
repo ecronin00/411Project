@@ -1053,7 +1053,7 @@ state before cycle 13 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 0
 		reg[ 2 ] 123
 		reg[ 3 ] 229
@@ -1129,7 +1129,7 @@ state before cycle 14 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 229
@@ -1205,7 +1205,7 @@ state before cycle 15 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1244,7 +1244,7 @@ state before cycle 15 starts
 		instruction beqz 0 6 4
 		pcPlus1 56
 		readRegA 8
-		readRegB 40
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction add 6 7 6
@@ -1281,7 +1281,7 @@ state before cycle 16 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1319,13 +1319,13 @@ state before cycle 16 starts
 	IDEX:
 		instruction beqz 0 0 -32
 		pcPlus1 60
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset -32
 	EXMEM:
 		instruction beqz 0 6 4
 		aluResult 60
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction add 6 7 6
 		writeData 7
@@ -1357,7 +1357,7 @@ state before cycle 17 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1401,7 +1401,7 @@ state before cycle 17 starts
 	EXMEM:
 		instruction beqz 0 0 -32
 		aluResult 28
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction beqz 0 6 4
 		writeData 60
@@ -1433,7 +1433,7 @@ state before cycle 18 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1471,8 +1471,8 @@ state before cycle 18 starts
 	IDEX:
 		instruction add 0 0 0
 		pcPlus1 0
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset 32
 	EXMEM:
 		instruction add 0 0 0
@@ -1509,7 +1509,7 @@ state before cycle 19 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1624,7 +1624,7 @@ state before cycle 20 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 1
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -1813,7 +1813,7 @@ state before cycle 23 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 229
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1889,7 +1889,7 @@ state before cycle 24 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 458
@@ -1965,7 +1965,7 @@ state before cycle 25 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 916
@@ -2004,7 +2004,7 @@ state before cycle 25 starts
 		instruction beqz 0 6 4
 		pcPlus1 56
 		readRegA 7
-		readRegB 40
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction add 6 7 6
@@ -2041,7 +2041,7 @@ state before cycle 26 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 916
@@ -2079,13 +2079,13 @@ state before cycle 26 starts
 	IDEX:
 		instruction beqz 0 0 -32
 		pcPlus1 60
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset -32
 	EXMEM:
 		instruction beqz 0 6 4
 		aluResult 60
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction add 6 7 6
 		writeData 6
@@ -2117,7 +2117,7 @@ state before cycle 27 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 916
@@ -2161,7 +2161,7 @@ state before cycle 27 starts
 	EXMEM:
 		instruction beqz 0 0 -32
 		aluResult 28
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction beqz 0 6 4
 		writeData 60
@@ -2193,7 +2193,7 @@ state before cycle 28 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 916
@@ -2231,8 +2231,8 @@ state before cycle 28 starts
 	IDEX:
 		instruction add 0 0 0
 		pcPlus1 0
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset 32
 	EXMEM:
 		instruction add 0 0 0
@@ -2269,7 +2269,7 @@ state before cycle 29 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 916
@@ -2384,7 +2384,7 @@ state before cycle 30 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 2
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -2573,7 +2573,7 @@ state before cycle 33 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 916
@@ -3029,7 +3029,7 @@ state before cycle 39 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 1832
@@ -3105,7 +3105,7 @@ state before cycle 40 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 1832
@@ -3220,7 +3220,7 @@ state before cycle 41 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 0
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -3409,7 +3409,7 @@ state before cycle 44 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 687
 		reg[ 2 ] 123
 		reg[ 3 ] 1832
@@ -3485,7 +3485,7 @@ state before cycle 45 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 1832
@@ -3561,7 +3561,7 @@ state before cycle 46 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -3600,7 +3600,7 @@ state before cycle 46 starts
 		instruction beqz 0 6 4
 		pcPlus1 56
 		readRegA 5
-		readRegB 40
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction add 6 7 6
@@ -3637,7 +3637,7 @@ state before cycle 47 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -3675,13 +3675,13 @@ state before cycle 47 starts
 	IDEX:
 		instruction beqz 0 0 -32
 		pcPlus1 60
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset -32
 	EXMEM:
 		instruction beqz 0 6 4
 		aluResult 60
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction add 6 7 6
 		writeData 4
@@ -3713,7 +3713,7 @@ state before cycle 48 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -3757,7 +3757,7 @@ state before cycle 48 starts
 	EXMEM:
 		instruction beqz 0 0 -32
 		aluResult 28
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction beqz 0 6 4
 		writeData 60
@@ -3789,7 +3789,7 @@ state before cycle 49 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -3827,8 +3827,8 @@ state before cycle 49 starts
 	IDEX:
 		instruction add 0 0 0
 		pcPlus1 0
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset 32
 	EXMEM:
 		instruction add 0 0 0
@@ -3865,7 +3865,7 @@ state before cycle 50 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -3980,7 +3980,7 @@ state before cycle 51 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 8
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -4169,7 +4169,7 @@ state before cycle 54 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 2519
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -4245,7 +4245,7 @@ state before cycle 55 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 3664
@@ -4321,7 +4321,7 @@ state before cycle 56 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -4360,7 +4360,7 @@ state before cycle 56 starts
 		instruction beqz 0 6 4
 		pcPlus1 56
 		readRegA 4
-		readRegB 40
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction add 6 7 6
@@ -4397,7 +4397,7 @@ state before cycle 57 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -4435,13 +4435,13 @@ state before cycle 57 starts
 	IDEX:
 		instruction beqz 0 0 -32
 		pcPlus1 60
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset -32
 	EXMEM:
 		instruction beqz 0 6 4
 		aluResult 60
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction add 6 7 6
 		writeData 3
@@ -4473,7 +4473,7 @@ state before cycle 58 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -4517,7 +4517,7 @@ state before cycle 58 starts
 	EXMEM:
 		instruction beqz 0 0 -32
 		aluResult 28
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction beqz 0 6 4
 		writeData 60
@@ -4549,7 +4549,7 @@ state before cycle 59 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -4587,8 +4587,8 @@ state before cycle 59 starts
 	IDEX:
 		instruction add 0 0 0
 		pcPlus1 0
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset 32
 	EXMEM:
 		instruction add 0 0 0
@@ -4625,7 +4625,7 @@ state before cycle 60 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -4740,7 +4740,7 @@ state before cycle 61 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 16
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -4929,7 +4929,7 @@ state before cycle 64 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 6183
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -5005,7 +5005,7 @@ state before cycle 65 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 7328
@@ -5081,7 +5081,7 @@ state before cycle 66 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5120,7 +5120,7 @@ state before cycle 66 starts
 		instruction beqz 0 6 4
 		pcPlus1 56
 		readRegA 3
-		readRegB 40
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction add 6 7 6
@@ -5157,7 +5157,7 @@ state before cycle 67 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5195,13 +5195,13 @@ state before cycle 67 starts
 	IDEX:
 		instruction beqz 0 0 -32
 		pcPlus1 60
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset -32
 	EXMEM:
 		instruction beqz 0 6 4
 		aluResult 60
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction add 6 7 6
 		writeData 2
@@ -5233,7 +5233,7 @@ state before cycle 68 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5277,7 +5277,7 @@ state before cycle 68 starts
 	EXMEM:
 		instruction beqz 0 0 -32
 		aluResult 28
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction beqz 0 6 4
 		writeData 60
@@ -5309,7 +5309,7 @@ state before cycle 69 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5347,8 +5347,8 @@ state before cycle 69 starts
 	IDEX:
 		instruction add 0 0 0
 		pcPlus1 0
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset 32
 	EXMEM:
 		instruction add 0 0 0
@@ -5385,7 +5385,7 @@ state before cycle 70 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5500,7 +5500,7 @@ state before cycle 71 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 32
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -5689,7 +5689,7 @@ state before cycle 74 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 13511
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5765,7 +5765,7 @@ state before cycle 75 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 14656
@@ -5841,7 +5841,7 @@ state before cycle 76 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 29312
@@ -5880,7 +5880,7 @@ state before cycle 76 starts
 		instruction beqz 0 6 4
 		pcPlus1 56
 		readRegA 2
-		readRegB 40
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction add 6 7 6
@@ -5917,7 +5917,7 @@ state before cycle 77 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 29312
@@ -5955,13 +5955,13 @@ state before cycle 77 starts
 	IDEX:
 		instruction beqz 0 0 -32
 		pcPlus1 60
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset -32
 	EXMEM:
 		instruction beqz 0 6 4
 		aluResult 60
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction add 6 7 6
 		writeData 1
@@ -5993,7 +5993,7 @@ state before cycle 78 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 29312
@@ -6037,7 +6037,7 @@ state before cycle 78 starts
 	EXMEM:
 		instruction beqz 0 0 -32
 		aluResult 28
-		readRegB 40
+		readRegB 0
 	MEMWB:
 		instruction beqz 0 6 4
 		writeData 60
@@ -6069,7 +6069,7 @@ state before cycle 79 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 29312
@@ -6107,8 +6107,8 @@ state before cycle 79 starts
 	IDEX:
 		instruction add 0 0 0
 		pcPlus1 0
-		readRegA 40
-		readRegB 40
+		readRegA 0
+		readRegB 0
 		offset 32
 	EXMEM:
 		instruction add 0 0 0
@@ -6145,7 +6145,7 @@ state before cycle 80 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 28
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 29312
@@ -6260,7 +6260,7 @@ state before cycle 81 starts
 		instruction beqz 0 4 4
 		pcPlus1 36
 		readRegA 64
-		readRegB 28
+		readRegB 0
 		offset 4
 	EXMEM:
 		instruction and 4 2 5
@@ -6449,7 +6449,7 @@ state before cycle 84 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 40
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 29312
@@ -6905,7 +6905,7 @@ state before cycle 90 starts
 		dataMem[ 18 ] 123
 		dataMem[ 19 ] 0
 	registers:
-		reg[ 0 ] 60
+		reg[ 0 ] 0
 		reg[ 1 ] 28167
 		reg[ 2 ] 123
 		reg[ 3 ] 58624
@@ -7019,12 +7019,12 @@ state before cycle 91 starts
 	IDEX:
 		instruction halt
 		pcPlus1 8
-		readRegA 60
-		readRegB 60
+		readRegA 0
+		readRegB 0
 		offset 0
 	EXMEM:
 		instruction sw 1 0 76
-		aluResult 136
+		aluResult 76
 		readRegB 28167
 	MEMWB:
 		instruction add 0 0 0
