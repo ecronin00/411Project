@@ -249,8 +249,11 @@ void run(Pstate state) {
 	
 	/* if this instruction is SW, just take the previous aluresult into reg2 */
 	if (opcode(new.EXMEM.instr) == SW_OP) {
-	  
-	  reg2 = state -> EXMEM.aluResult;
+
+	  if (field_r3(state -> EXMEM.instr) == field_r2(new.EXMEM.instr)) {
+	   
+	    reg2 = state -> EXMEM.aluResult;
+	  }
 
 	}
 	
@@ -281,13 +284,12 @@ void run(Pstate state) {
       } else if (opcode(new.EXMEM.instr) == LW_OP) {
 
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
-	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+	new.EXMEM.readRegB = new.reg[field_r1(new.EXMEM.instr)];
 	
       } else if (opcode(new.EXMEM.instr) == SW_OP) {
 
-	/* printf("REG1 VALUE: %d\n", reg1); */
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
-	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
+	new.EXMEM.readRegB = reg2;
 	
       } else if (opcode(new.EXMEM.instr) == BEQZ_OP) {
 

@@ -558,6 +558,7 @@ state before cycle 7 starts
 	WBEND:
 		instruction lw 3 0 36
 		writeData 20
+this instruction is SW_OP, storing from: 5
 @@@
 state before cycle 8 starts
 	pc 32
@@ -618,7 +619,7 @@ state before cycle 8 starts
 	EXMEM:
 		instruction sw 5 0 40
 		aluResult 40
-		readRegB 0
+		readRegB 60
 	MEMWB:
 		instruction sub 5 4 3
 		writeData 60
@@ -639,7 +640,7 @@ state before cycle 9 starts
 		dataMem[ 7 ] 50
 		dataMem[ 8 ] 30
 		dataMem[ 9 ] 20
-		dataMem[ 10 ] 0
+		dataMem[ 10 ] 60
 	registers:
 		reg[ 0 ] 0
 		reg[ 1 ] 50
@@ -688,7 +689,7 @@ state before cycle 9 starts
 		readRegB 0
 	MEMWB:
 		instruction sw 5 0 40
-		writeData 0
+		writeData 60
 	WBEND:
 		instruction sub 5 4 3
 		writeData 60
@@ -706,7 +707,7 @@ state before cycle 10 starts
 		dataMem[ 7 ] 50
 		dataMem[ 8 ] 30
 		dataMem[ 9 ] 20
-		dataMem[ 10 ] 0
+		dataMem[ 10 ] 60
 	registers:
 		reg[ 0 ] 0
 		reg[ 1 ] 50
@@ -758,6 +759,6 @@ state before cycle 10 starts
 		writeData 0
 	WBEND:
 		instruction sw 5 0 40
-		writeData 0
+		writeData 60
 machine halted
 total of 10 cycles executed
