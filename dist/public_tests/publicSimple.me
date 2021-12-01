@@ -618,7 +618,7 @@ state before cycle 8 starts
 	EXMEM:
 		instruction sw 5 0 40
 		aluResult 40
-		readRegB 60
+		readRegB 0
 	MEMWB:
 		instruction sub 5 4 3
 		writeData 60
@@ -639,7 +639,7 @@ state before cycle 9 starts
 		dataMem[ 7 ] 50
 		dataMem[ 8 ] 30
 		dataMem[ 9 ] 20
-		dataMem[ 10 ] 60
+		dataMem[ 10 ] 0
 	registers:
 		reg[ 0 ] 0
 		reg[ 1 ] 50
@@ -688,7 +688,7 @@ state before cycle 9 starts
 		readRegB 0
 	MEMWB:
 		instruction sw 5 0 40
-		writeData 60
+		writeData 0
 	WBEND:
 		instruction sub 5 4 3
 		writeData 60
@@ -706,7 +706,7 @@ state before cycle 10 starts
 		dataMem[ 7 ] 50
 		dataMem[ 8 ] 30
 		dataMem[ 9 ] 20
-		dataMem[ 10 ] 60
+		dataMem[ 10 ] 0
 	registers:
 		reg[ 0 ] 0
 		reg[ 1 ] 50
@@ -758,6 +758,6 @@ state before cycle 10 starts
 		writeData 0
 	WBEND:
 		instruction sw 5 0 40
-		writeData 60
+		writeData 0
 machine halted
 total of 10 cycles executed

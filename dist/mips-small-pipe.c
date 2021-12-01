@@ -128,8 +128,6 @@ void run(Pstate state) {
       if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr) ||
 	  (field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr))) {
 
-	printf("LOAD STALL INCOMING!!!\n");
-	
 	new.IDEX.instr = NOPINSTRUCTION;
 	new.IDEX.pcPlus1 = 0;
 	new.IDEX.offset = offset(NOPINSTRUCTION);
