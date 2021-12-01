@@ -126,7 +126,9 @@ void run(Pstate state) {
        actually same thing goes for ADDI if theres a dependence  */
     if ((opcode(new.IDEX.instr) == REG_REG_OP) && (opcode(state -> IDEX.instr) == LW_OP)) { 
       if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr) ||
-	  field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr)) {
+	  (field_r2(new.IDEX.instr) == field_r2(state -> IDEX.instr))) {
+
+	printf("LOAD STALL INCOMING!!!\n");
 	
 	new.IDEX.instr = NOPINSTRUCTION;
 	new.IDEX.pcPlus1 = 0;
@@ -136,6 +138,26 @@ void run(Pstate state) {
 	new.pc -= 4;
 	new.IFID.pcPlus1 = new.pc;
 	
+      }
+    }
+
+    /* need to check for stalls when last instruction is LW and this one is LW
+       using an offset of the register the previous instruction is loading into */
+
+    if ((opcode(new.IDEX.instr) != REG_REG_OP) &&
+	(opcode(new.IDEX.instr) != HALT_OP) && (opcode(state -> IDEX.instr) == LW_OP)) {
+      if (field_r1(new.IDEX.instr) == field_r2(state -> IDEX.instr)) {
+
+	/* printf("LOAD STALL INCOMING!!!\n"); */
+
+	new.IDEX.instr = NOPINSTRUCTION;
+	new.IDEX.pcPlus1 = 0;
+	new.IDEX.offset = offset(NOPINSTRUCTION);
+
+	new.IFID.instr = state -> IFID.instr;
+	new.pc -= 4;
+	new.IFID.pcPlus1 = new.pc;
+
       }
     }
     
@@ -157,13 +179,14 @@ void run(Pstate state) {
     
     /* check if the instruction we are forwarding from is an I type instruction
        from MEMWB */
-    if (opcode(new.EXMEM.instr) != HALT_OP) {
+    if (opcode(new.EXMEM.instr) != HALT_OP ) {
       if (state -> MEMWB.instr != NOPINSTRUCTION &&
 	  opcode(state -> MEMWB.instr) != REG_REG_OP &&
-	  opcode(state -> MEMWB.instr) != SW_OP) {
+	  opcode(state -> MEMWB.instr) != SW_OP &&
+	  opcode(state -> MEMWB.instr) != BEQZ_OP) {
 	
 	if (field_r1(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
-	  
+
 	  reg1 = state -> MEMWB.writeData;
 	  
 	}
@@ -171,7 +194,7 @@ void run(Pstate state) {
 	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 	  
 	  if (field_r2(new.EXMEM.instr) == field_r2(state -> MEMWB.instr)) {
-	    
+
 	    reg2 = state -> MEMWB.writeData;
 	    
 	  }
@@ -185,7 +208,7 @@ void run(Pstate state) {
 		 opcode(state -> MEMWB.instr) != SW_OP) {
 	
 	if (field_r1(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
-	  
+
 	  reg1 = state -> MEMWB.writeData;
 	  
 	}
@@ -193,7 +216,7 @@ void run(Pstate state) {
 	if (opcode(new.EXMEM.instr) == REG_REG_OP) {
 	  
 	  if (field_r2(new.EXMEM.instr) == field_r3(state -> MEMWB.instr)) {
-	    
+
 	    reg2 = state -> MEMWB.writeData;
 	    
 	  }
@@ -203,10 +226,11 @@ void run(Pstate state) {
       /* check if instruction we are forwarding from is I type from EXMEM */
       if (state -> EXMEM.instr != NOPINSTRUCTION &&
 	  opcode(state -> EXMEM.instr) != REG_REG_OP &&
-	  opcode(state -> EXMEM.instr) != SW_OP) {
+	  opcode(state -> EXMEM.instr) != SW_OP &&
+	  opcode(state -> EXMEM.instr) != BEQZ_OP) {
 	
 	if (field_r1(new.EXMEM.instr) == field_r2(state -> EXMEM.instr)) {
-	  
+
 	  reg1 = state -> EXMEM.aluResult;
 	  
 	}
@@ -229,7 +253,7 @@ void run(Pstate state) {
 	if (opcode(new.EXMEM.instr) == SW_OP) {
 	  
 	  reg2 = state -> EXMEM.aluResult;
-	  
+
 	}
 	
 	if (field_r1(new.EXMEM.instr) == field_r3(state -> EXMEM.instr)) {
@@ -257,14 +281,15 @@ void run(Pstate state) {
 	new.EXMEM.readRegB = state -> IDEX.readRegB;
 	
       } else if (opcode(new.EXMEM.instr) == LW_OP) {
-	
+
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
 	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
 	
       } else if (opcode(new.EXMEM.instr) == SW_OP) {
-	
+
+	/* printf("REG1 VALUE: %d\n", reg1); */
 	new.EXMEM.aluResult = reg1 + field_imm(new.EXMEM.instr);
-	new.EXMEM.readRegB = reg2;
+	new.EXMEM.readRegB = new.reg[field_r2(new.EXMEM.instr)];
 	
       } else if (opcode(new.EXMEM.instr) == BEQZ_OP) {
 
